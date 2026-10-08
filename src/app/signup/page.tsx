@@ -85,7 +85,7 @@ function StepCredentials({
         />
 
         <div className="flex flex-col gap-1">
-          <label className="flex items-center gap-1.5 text-[12px] font-medium text-[#475569]">
+          <label htmlFor="pin-input" className="flex items-center gap-1.5 text-[12px] font-medium text-[#475569]">
             PIN (6 digits)
           </label>
           {/* PIN dot display */}
@@ -103,6 +103,7 @@ function StepCredentials({
             ))}
           </div>
           <input
+            id="pin-input"
             type="password"
             inputMode="numeric"
             value={pin}
@@ -135,7 +136,7 @@ function StepCredentials({
 
       <p className="text-center text-sm text-[#475569]">
         Already have an account?{" "}
-        <a href="#" className="font-medium text-[#14B8A6] hover:underline">
+        <a href="/login" className="font-medium text-[#14B8A6] hover:underline">
           Sign in
         </a>
       </p>

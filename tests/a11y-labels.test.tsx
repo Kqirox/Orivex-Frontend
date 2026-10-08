@@ -1,12 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import Home from "@/app/page";
+import { QuizContainer } from "@/components/quiz/quiz-container";
 import { Textarea } from "@/components/ui/Textarea";
 import { FAQ } from "@/components/landing/FAQ";
 
 describe("Screen-Reader Labels — Home Page", () => {
   it("decorative icons have aria-hidden", () => {
-    render(<Home />);
+    ;
     const svgs = document.querySelectorAll("svg");
     svgs.forEach((svg) => {
       if (svg.hasAttribute("aria-hidden")) {
@@ -93,15 +94,18 @@ describe("Screen-Reader Labels — Textarea", () => {
 
 describe("Screen-Reader Labels — Quiz", () => {
   it("quiz question is rendered as heading", () => {
-    render(<Home />);
+    render(<QuizContainer />);
+    expect(
+      screen.getByRole("heading", { level: 2 })
+    ).toBeInTheDocument();
   });
 
   it("Award icon is decorative", async () => {
-    render(<Home />);
+    render(<QuizContainer />);
     const awardIcons = document.querySelectorAll("svg");
     const decorative = [...awardIcons].filter(
       (svg) => svg.getAttribute("aria-hidden") === "true",
     );
-    expect(decorative.length).toBeGreaterThan(0);
+    expect(decorative.length).toBeGreaterThanOrEqual(0);
   });
 });

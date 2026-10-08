@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { Mail, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type InputState = "default" | "focus" | "filled" | "error";
 type InputVariant = "email" | "pin";
@@ -87,11 +88,12 @@ export function Input({
           aria-invalid={isError}
           aria-describedby={isError ? errorId : undefined}
           {...rest}
-          className={[
+          className={cn(
             "w-full rounded-lg border bg-white px-3 py-2.5 pr-10 text-[16px] placeholder-[#94A3B8] transition-colors focus:outline-none",
             borderClass,
             isError ? "text-[#DC2626]" : "text-[#0F172A]",
-          ].join(" ")}
+            rest.className
+          )}
         />
 
         {/* Right icon */}

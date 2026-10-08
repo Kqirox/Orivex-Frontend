@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import Home from "@/app/page";
 import { QuizContainer } from "@/components/quiz/quiz-container";
@@ -7,7 +7,7 @@ import { FAQ } from "@/components/landing/FAQ";
 
 describe("Screen-Reader Labels — Home Page", () => {
   it("decorative icons have aria-hidden", () => {
-    ;
+    render(<Home />);
     const svgs = document.querySelectorAll("svg");
     svgs.forEach((svg) => {
       if (svg.hasAttribute("aria-hidden")) {
@@ -100,12 +100,16 @@ describe("Screen-Reader Labels — Quiz", () => {
     ).toBeInTheDocument();
   });
 
-  it("Award icon is decorative", async () => {
+  it("Award and feedback icons are decorative", () => {
     render(<QuizContainer />);
-    const awardIcons = document.querySelectorAll("svg");
-    const decorative = [...awardIcons].filter(
-      (svg) => svg.getAttribute("aria-hidden") === "true",
-    );
-    expect(decorative.length).toBeGreaterThanOrEqual(0);
+
+    // Reveal the feedback icons by answering the first question.
+    fireEvent.click(screen.getAllByRole("button")[0]);
+
+    const svgs = [...document.querySelectorAll("svg")];
+    expect(svgs.length).toBeGreaterThan(0);
+    svgs.forEach((svg) => {
+      expect(svg.getAttribute("aria-hidden")).toBe("true");
+    });
   });
 });

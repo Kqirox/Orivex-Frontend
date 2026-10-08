@@ -72,6 +72,10 @@ function QuizProgress({ current, total }: { current: number; total: number }) {
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
         <div
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-valuenow={current}
           className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
           style={{ width: `${(current / total) * 100}%` }}
         />

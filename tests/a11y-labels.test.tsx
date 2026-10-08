@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import Home from "@/app/page";
+import { QuizContainer } from "@/components/quiz/quiz-container";
 import { Textarea } from "@/components/ui/Textarea";
 import { FAQ } from "@/components/landing/FAQ";
 
@@ -93,15 +94,22 @@ describe("Screen-Reader Labels — Textarea", () => {
 
 describe("Screen-Reader Labels — Quiz", () => {
   it("quiz question is rendered as heading", () => {
-    render(<Home />);
+    render(<QuizContainer />);
+    expect(
+      screen.getByRole("heading", { level: 2 })
+    ).toBeInTheDocument();
   });
 
-  it("Award icon is decorative", async () => {
-    render(<Home />);
-    const awardIcons = document.querySelectorAll("svg");
-    const decorative = [...awardIcons].filter(
-      (svg) => svg.getAttribute("aria-hidden") === "true",
-    );
-    expect(decorative.length).toBeGreaterThan(0);
+  it("Award and feedback icons are decorative", () => {
+    render(<QuizContainer />);
+
+    // Reveal the feedback icons by answering the first question.
+    fireEvent.click(screen.getAllByRole("button")[0]);
+
+    const svgs = [...document.querySelectorAll("svg")];
+    expect(svgs.length).toBeGreaterThan(0);
+    svgs.forEach((svg) => {
+      expect(svg.getAttribute("aria-hidden")).toBe("true");
+    });
   });
 });

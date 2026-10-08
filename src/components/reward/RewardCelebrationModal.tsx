@@ -8,6 +8,7 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 type RewardCelebrationModalProps = {
   amount: string;
@@ -24,6 +25,46 @@ const sparkles = [
 
 export function RewardCelebrationModal({ amount, badgeLabel, onClose }: RewardCelebrationModalProps) {
   const shouldReduceMotion = useReducedMotion();
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedElement = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    previouslyFocusedElement.current = document.activeElement as HTMLElement;
+
+    const modal = modalRef.current;
+    if (modal) {
+      const focusableElements = modal.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length > 0) {
+        focusableElements[0].focus();
+      } else {
+        modal.focus();
+      }
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      if (previouslyFocusedElement.current) {
+        previouslyFocusedElement.current.focus();
+      }
+    };
+  }, [onClose]);
+
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
 
   const motionProps = shouldReduceMotion
     ? {}
@@ -34,14 +75,16 @@ export function RewardCelebrationModal({ amount, badgeLabel, onClose }: RewardCe
       };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" onClick={handleBackdropClick}>
       <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" />
       <motion.div
+        ref={modalRef}
         {...motionProps}
         role="dialog"
         aria-modal="true"
         aria-labelledby="reward-modal-title"
         aria-describedby="reward-modal-description"
+        tabIndex={-1}
         className="relative z-10 mx-auto w-full max-w-2xl overflow-hidden rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_40px_120px_rgba(15,23,42,0.2)] backdrop-blur-sm sm:p-8"
       >
         <button
